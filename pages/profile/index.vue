@@ -79,7 +79,10 @@
 </template>
 
 <script>
-export default {};
+export default {
+  middleware: "authenticated",
+  name: "UserProfile",
+};
 </script>
 
 <style></style>

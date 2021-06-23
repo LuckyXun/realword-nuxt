@@ -26,6 +26,7 @@
                 v-if="!isLogin"
               />
             </fieldset>
+
             <fieldset class="form-group">
               <input
                 class="form-control form-control-lg"
@@ -56,16 +57,18 @@
 
 <script>
 import { login, register } from "@/api/user.js";
+const jsCookie = process.client ? require("js-cookie") : undefined;
 
 export default {
+  middleware: "notAuthenticated",
   name: "LoginIndex",
   asyncData() {},
   data() {
     return {
       user: {
         username: "",
-        email: "",
-        password: "",
+        email: "111@11.c",
+        password: "11111111",
       },
       errors: {},
     };
@@ -81,8 +84,8 @@ export default {
         const { data } = this.isLogin
           ? await login({ user: this.user })
           : await register({ user: this.user });
-        console.log(user);
-        
+        this.$store.commit("setUser", data.user);
+        jsCookie && jsCookie.set("user", data.user);
         this.$router.push("/");
       } catch (e) {
         this.errors = e.response.data.errors;

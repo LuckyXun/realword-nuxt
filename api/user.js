@@ -6,3 +6,4 @@ export const login = function (data) {
 export const register = function (data) {
     return request.post('/api/users', data)
 }
+
