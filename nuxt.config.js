@@ -1,6 +1,6 @@
 export default {
     router: {
-        linkExactActiveClass:"active",
+        linkExactActiveClass: "active",
         extendRoutes(routes, resolve) {
             // 清除
             routes.splice(0, routes.length);
@@ -52,5 +52,6 @@ export default {
 
             ])
         }
-    }
+    },
+    plugins: ['~/plugins/request.js','~/plugins/day.js']
 }

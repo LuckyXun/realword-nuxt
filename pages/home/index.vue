@@ -12,18 +12,28 @@
         <div class="col-md-9">
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
-              <li class="nav-item">
-                <a class="nav-link disabled" href="" v-if="user">Your Feed</a>
+              <li class="nav-item" v-if="user">
+                <nuxt-link
+                  exact
+                  :class="{ active: tab === 'yourFeed' }"
+                  class="nav-link"
+                  :to="{ name: 'home', query: { page: 1, tag: '', tab: 'yourFeed' } }"
+                  >Your Feed</nuxt-link
+                >
               </li>
               <li class="nav-item">
                 <nuxt-link
+                  exact
+                  :class="{ active: tab === 'globalFeed' }"
                   class="nav-link"
-                  :to="{ name: 'home', query: { page: idx, tag: '' } }"
+                  :to="{ name: 'home', query: { page: 1, tag: '', tab: 'globalFeed' } }"
                   >Global Feed</nuxt-link
                 >
               </li>
               <li class="nav-item" v-if="activeTag">
-                <span class="nav-link active" href=""># {{ activeTag }}</span>
+                <span class="nav-link" :class="{ active: tab === activeTag }" href=""
+                  ># {{ activeTag }}</span
+                >
               </li>
             </ul>
           </div>
@@ -37,7 +47,7 @@
               <a href="profile.html"><img :src="article.author.image" /></a>
               <div class="info">
                 <a href="" class="author">{{ article.author.username }}</a>
-                <span class="date">{{ article.updatedAt }}</span>
+                <span class="date">{{ article.updatedAt|date('MMM DD,YYYY') }}</span>
               </div>
               <button class="btn btn-outline-primary btn-sm pull-xs-right">
                 <i class="ion-heart"></i> {{ article.favoritesCount }}
@@ -60,7 +70,7 @@
               </ul>
             </a>
           </div>
-          <nav>
+          <nav v-if="totalPage > 1">
             <ul class="pagination">
               <!-- ngRepeat: pageNumber in $ctrl.pageRange($ctrl.totalPages) -->
               <li
@@ -72,7 +82,7 @@
                 <nuxt-link
                   class="page-link ng-binding"
                   href=""
-                  :to="{ name: 'home', query: { page: idx, tag: activeTag } }"
+                  :to="{ name: 'home', query: { page: idx, tag: activeTag, tab: tab } }"
                   >{{ idx }}</nuxt-link
                 >
               </li>
@@ -86,7 +96,7 @@
 
             <div class="tag-list">
               <nuxt-link
-                :to="{ name: 'home', query: { page: 1, tag: tag } }"
+                :to="{ name: 'home', query: { page: 1, tag: tag, tab: tag } }"
                 class="tag-pill tag-default"
                 v-for="(tag, idx) in tags"
                 :key="idx"
@@ -101,7 +111,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import { getArticles, getTags } from "@/api/home";
+import { getArticles, getTags, getFeedList } from "@/api/article";
 
 export default {
   name: "Home",
@@ -114,19 +124,24 @@ export default {
   data() {
     return {};
   },
-  watchQuery: ["page", "tag"],
+  watchQuery: ["page", "tag", "tab"],
   async asyncData({ query }) {
     const size = 10;
     const page = +(query.page || 1);
+    const tab = query.tab || "globalFeed";
     const activeTag = query.tag || "";
-    let listParams = {
+    const listParams = {
       limit: size,
       offset: size * (page - 1),
       tag: activeTag,
     };
-    let { data } = await getArticles({ params: listParams });
-    let { data: tagsRes } = await getTags();
-    return Object.assign({ size, page, activeTag }, data, tagsRes);
+    const queryFn = tab === "yourFeed" ? getFeedList : getArticles;
+
+    const res = await Promise.all([queryFn({ params: listParams }), getTags()]);
+    const data = res[0].data;
+    const tagsRes = res[1].data;
+
+    return Object.assign({ size, page, activeTag, tab }, data, tagsRes);
   },
 };
 </script>
