@@ -49,7 +49,7 @@
                 <a href="" class="author">{{ article.author.username }}</a>
                 <span class="date">{{ article.updatedAt|date('MMM DD,YYYY') }}</span>
               </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
+              <button class="btn btn-outline-primary btn-sm pull-xs-right" :class="{'active':article.favorited,'disabled':article.favoritePending}" @click="favorite(article)">
                 <i class="ion-heart"></i> {{ article.favoritesCount }}
               </button>
             </div>
@@ -111,7 +111,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import { getArticles, getTags, getFeedList } from "@/api/article";
+import { getArticles, getTags, getFeedList,addFavorite,deleteFavorite } from "@/api/article";
 
 export default {
   name: "Home",
@@ -140,9 +140,39 @@ export default {
     const res = await Promise.all([queryFn({ params: listParams }), getTags()]);
     const data = res[0].data;
     const tagsRes = res[1].data;
-
+    data.articles.forEach(n=>{
+       n.favoritePending = false
+    })
     return Object.assign({ size, page, activeTag, tab }, data, tagsRes);
   },
+  methods:{
+    /**
+     * @description: 收藏 or 取消收藏
+     */    
+    async favorite(article){
+       if(article.favoritePending){
+          return
+       }
+       article.favoritePending = true
+       const fun = article.favorited?deleteFavorite:addFavorite;
+       let res = await fun(article.slug).catch(()=>{
+         return false
+       });
+       console.log(res)
+       if(res){
+         article.favorited = !article.favorited;
+         if(article.favorited){
+           article.favoritesCount ++ 
+         }else{
+            article.favoritesCount --
+         }
+       }
+      article.favoritePending = false
+
+    }
+  }
+
+
 };
 </script>
 

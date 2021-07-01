@@ -10,7 +10,6 @@ export default ({ store }) => {
     request.interceptors.request.use(config => {
       
         if (store.state?.user) {
-            console.log(233)
             config.headers.Authorization = 'Token ' + store.state.user.token
         }
         return config
