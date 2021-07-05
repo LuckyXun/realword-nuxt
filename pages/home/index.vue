@@ -171,7 +171,6 @@ export default {
       let res = await fun(article.slug).catch(() => {
         return false;
       });
-      console.log(res);
       if (res) {
         article.favorited = !article.favorited;
         if (article.favorited) {

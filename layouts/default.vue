@@ -15,7 +15,7 @@
               </nuxt-link>
             </li>
             <li class="nav-item">
-              <nuxt-link class="nav-link" to="settings">
+              <nuxt-link class="nav-link" to="/settings">
                 <i class="ion-gear-a"></i>&nbsp;Settings
               </nuxt-link>
             </li>
@@ -28,10 +28,10 @@
           </template>
           <template v-else>
             <li class="nav-item">
-              <nuxt-link class="nav-link" to="register">Sign up</nuxt-link>
+              <nuxt-link class="nav-link" to="/register">Sign up</nuxt-link>
             </li>
             <li class="nav-item">
-              <nuxt-link class="nav-link" to="login">Sign in</nuxt-link>
+              <nuxt-link class="nav-link" to="/login">Sign in</nuxt-link>
             </li>
           </template>
         </ul>

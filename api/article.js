@@ -31,3 +31,8 @@ export const getArticle = slug => {
         url: `/api/articles/${slug}`
     })
 }
+
+export const publishArticle = data =>{
+    return request.post('/api/articles', data)
+
+}
