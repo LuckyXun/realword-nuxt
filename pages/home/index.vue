@@ -47,13 +47,20 @@
               <a href="profile.html"><img :src="article.author.image" /></a>
               <div class="info">
                 <a href="" class="author">{{ article.author.username }}</a>
-                <span class="date">{{ article.updatedAt|date('MMM DD,YYYY') }}</span>
+                <span class="date">{{ article.updatedAt | date("MMM DD,YYYY") }}</span>
               </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right" :class="{'active':article.favorited,'disabled':article.favoritePending}" @click="favorite(article)">
+              <button
+                class="btn btn-outline-primary btn-sm pull-xs-right"
+                :class="{ active: article.favorited, disabled: article.favoritePending }"
+                @click="favorite(article)"
+              >
                 <i class="ion-heart"></i> {{ article.favoritesCount }}
               </button>
             </div>
-            <a href="" class="preview-link">
+            <nuxt-link
+              :to="{ name: 'article', params: { slug: article.slug } }"
+              class="preview-link"
+            >
               <h1>{{ article.title }}</h1>
               <p>{{ article.description }}</p>
               <span>Read more...</span>
@@ -68,7 +75,7 @@
                 </li>
                 <!-- end ngRepeat: tag in $ctrl.article.tagList -->
               </ul>
-            </a>
+            </nuxt-link>
           </div>
           <nav v-if="totalPage > 1">
             <ul class="pagination">
@@ -111,7 +118,13 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import { getArticles, getTags, getFeedList,addFavorite,deleteFavorite } from "@/api/article";
+import {
+  getArticles,
+  getTags,
+  getFeedList,
+  addFavorite,
+  deleteFavorite,
+} from "@/api/article";
 
 export default {
   name: "Home",
@@ -140,39 +153,36 @@ export default {
     const res = await Promise.all([queryFn({ params: listParams }), getTags()]);
     const data = res[0].data;
     const tagsRes = res[1].data;
-    data.articles.forEach(n=>{
-       n.favoritePending = false
-    })
+    data.articles.forEach((n) => {
+      n.favoritePending = false;
+    });
     return Object.assign({ size, page, activeTag, tab }, data, tagsRes);
   },
-  methods:{
+  methods: {
     /**
      * @description: 收藏 or 取消收藏
-     */    
-    async favorite(article){
-       if(article.favoritePending){
-          return
-       }
-       article.favoritePending = true
-       const fun = article.favorited?deleteFavorite:addFavorite;
-       let res = await fun(article.slug).catch(()=>{
-         return false
-       });
-       console.log(res)
-       if(res){
-         article.favorited = !article.favorited;
-         if(article.favorited){
-           article.favoritesCount ++ 
-         }else{
-            article.favoritesCount --
-         }
-       }
-      article.favoritePending = false
-
-    }
-  }
-
-
+     */
+    async favorite(article) {
+      if (article.favoritePending) {
+        return;
+      }
+      article.favoritePending = true;
+      const fun = article.favorited ? deleteFavorite : addFavorite;
+      let res = await fun(article.slug).catch(() => {
+        return false;
+      });
+      console.log(res);
+      if (res) {
+        article.favorited = !article.favorited;
+        if (article.favorited) {
+          article.favoritesCount++;
+        } else {
+          article.favoritesCount--;
+        }
+      }
+      article.favoritePending = false;
+    },
+  },
 };
 </script>
 
