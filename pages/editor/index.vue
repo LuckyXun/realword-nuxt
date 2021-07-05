@@ -1,3 +1,9 @@
+<!--
+ * @Author: XunL
+ * @Date: 2021-06-23 02:30:27
+ * @LastEditTime: 2021-07-05 22:11:01
+ * @Description: file content
+-->
 <template>
   <div class="editor-page">
     <div class="container page">
@@ -54,24 +60,35 @@
 </template>
 
 <script>
+import { publishArticle } from "@/api/article.js";
+import { mapState } from "vuex";
+
 export default {
   middleware: "authenticated",
-  data(){
+  data() {
     return {
-        article:{
-            title: "",
-            description: "",
-            body: "",
-            tagList: ""
-        }
-    }
+      article: {
+        title: "",
+        description: "",
+        body: "",
+        tagList: "",
+      },
+    };
   },
-  methods:{
-    async submit(){
-        //TODO 判断的是发布还是修改的逻辑
-
-    }
-  }
+  computed: {
+    ...mapState(["user"]),
+  },
+  methods: {
+    async submit() {
+      //TODO 判断的是发布还是修改的逻辑
+      const params = Object.assign({}, this.article);
+      params.tagList = params.tagList.split(",");
+      const { status } = await publishArticle(params);
+      if (status === 200) {
+        this.$router.push(`/profile/${this.user.username}`);
+      }
+    },
+  },
 };
 </script>
 
