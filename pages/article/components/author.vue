@@ -1,7 +1,7 @@
 <!--
  * @Author: XunL
  * @Date: 2021-07-04 14:00:18
- * @LastEditTime: 2021-07-05 16:20:31
+ * @LastEditTime: 2021-07-06 18:02:55
  * @Description: 文章作者信息
 -->
 
@@ -12,6 +12,7 @@
       <a href="" class="author">{{author.username}}</a>
       <span class="date">{{ article.createdAt | date("MMM D,YYYY") }}</span>
     </div>
+    <template v-if="author.username!==user.username">
     <button class="btn btn-sm btn-outline-secondary" :class="{'active':author.following}" @click="follow(author)">
       <i class="ion-plus-round"></i>
       &nbsp; Follow {{author.username}}
@@ -21,15 +22,25 @@
       <i class="ion-heart"></i>
       &nbsp; Favorite Post <span class="counter" >{{article.favoritesCount}}</span>
     </button>
-    
+    </template>
+    <template v-else>
+    <a class="btn btn-outline-secondary btn-sm" @click="edit">
+      <i class="ion-edit"></i> Edit Article
+    </a>
+
+    <button class="btn btn-outline-danger btn-sm" @click="deleteArticle">
+      <i class="ion-trash-a"></i> Delete Article
+    </button>
+    </template>
+  
   </div>
 </template>
 
 <script>
 import { addFavorite,
-  deleteFavorite, } from "@/api/article";
+  deleteFavorite,deleteArticle } from "@/api/article";
 import {followUser,unFollowUser} from '@/api/user'
-
+import { mapState } from "vuex";
 export default {
   name: "author",
   props:{
@@ -41,9 +52,21 @@ export default {
   computed:{
     author(){
       return this.article.author
-    }
+    },
+    ...mapState(['user'])
   },
   methods:{
+    edit(){
+      this.$router.push('/editor/'+this.article.slug)
+    },
+    async deleteArticle(){
+      let res = await deleteArticle(this.article.slug).catch(() => {
+        return false;
+      });
+      if(res){
+        this.$router.back();
+      }
+    },
     async favorite(article) {
       if (article.favoritePending) {
         return;

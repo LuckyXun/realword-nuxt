@@ -1,7 +1,7 @@
 <!--
  * @Author: XunL
  * @Date: 2021-06-23 02:30:27
- * @LastEditTime: 2021-07-05 22:11:01
+ * @LastEditTime: 2021-07-06 18:13:40
  * @Description: file content
 -->
 <template>
@@ -60,30 +60,45 @@
 </template>
 
 <script>
-import { publishArticle } from "@/api/article.js";
+import { publishArticle,getArticle,updateArticle } from "@/api/article.js";
 import { mapState } from "vuex";
 
 export default {
   middleware: "authenticated",
   data() {
-    return {
+   
+  },
+  computed: {
+    ...mapState(["user"]),
+  },
+  async asyncData({params}){
+     const slug = params.slug;
+     const data = {
+       
       article: {
         title: "",
         description: "",
         body: "",
         tagList: "",
       },
-    };
+    }
+    if(slug){
+      const res = await getArticle(slug);
+      Object.assign(data.article,res.data.article)
+    }     
+    data.article.tagList = data.article.tagList.join(',');
+    data.slug = slug
+    return data
   },
-  computed: {
-    ...mapState(["user"]),
-  },
+
+
   methods: {
     async submit() {
       //TODO 判断的是发布还是修改的逻辑
       const params = Object.assign({}, this.article);
       params.tagList = params.tagList.split(",");
-      const { status } = await publishArticle(params);
+
+      const { status } = this.slug?await updateArticle(this.slug,params): await publishArticle(params);
       if (status === 200) {
         this.$router.push(`/profile/${this.user.username}`);
       }

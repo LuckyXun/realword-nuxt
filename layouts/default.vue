@@ -20,7 +20,7 @@
               </nuxt-link>
             </li>
             <li class="nav-item">
-              <nuxt-link class="nav-link" to="/profile/123">
+              <nuxt-link class="nav-link" :to="'/profile/'+user.username">
                 <img class="user-pic" :src="user.image" />
                 {{ user.username }}
               </nuxt-link>
@@ -40,7 +40,7 @@
     <Nuxt />
     <footer>
       <div class="container">
-        <a href="/" class="logo-font">conduit</a>
+        <nuxt-link class="logo-font" to="/">conduit</nuxt-link>
         <span class="attribution">
           An interactive learning project from
           <a href="https://thinkster.io">Thinkster</a>. Code &amp; design licensed under

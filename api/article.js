@@ -36,3 +36,12 @@ export const publishArticle = data =>{
     return request.post('/api/articles', data)
 
 }
+
+export const deleteArticle = slug =>{
+    return request.delete(`/api/articles/${slug}`)
+
+}
+export const updateArticle = (slug,data) =>{
+    return request.put(`/api/articles/${slug}`, data)
+
+}
