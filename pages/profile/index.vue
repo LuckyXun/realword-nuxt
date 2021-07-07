@@ -44,18 +44,15 @@
               </li>
             </ul>
           </div>
-
-       
-
-              <div
+          <div
             class="article-preview"
             v-for="article in articles"
             :key="article.updatedAt"
           >
             <div class="article-meta">
-              <a href="profile.html"><img :src="article.author.image" /></a>
+              <nuxt-link :to="{name:'profile',params:{username:article.author.username}}"><img :src="article.author.image" /></nuxt-link>
               <div class="info">
-                <a href="" class="author">{{ article.author.username }}</a>
+                <nuxt-link :to="{name:'profile',params:{username:article.author.username}}" class="author">{{ article.author.username }}</nuxt-link>
                 <span class="date">{{ article.updatedAt | date("MMM DD,YYYY") }}</span>
               </div>
               <button

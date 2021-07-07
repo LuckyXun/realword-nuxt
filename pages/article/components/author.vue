@@ -1,15 +1,15 @@
 <!--
  * @Author: XunL
  * @Date: 2021-07-04 14:00:18
- * @LastEditTime: 2021-07-06 18:02:55
+ * @LastEditTime: 2021-07-07 14:25:20
  * @Description: 文章作者信息
 -->
 
 <template>
   <div class="article-meta">
-    <a href=""><img :src="author.image" /></a>
+    <nuxt-link :to="{name:'profile',params:{username:author.username}}"><img :src="author.image" /></nuxt-link>
     <div class="info">
-      <a href="" class="author">{{author.username}}</a>
+    <nuxt-link :to="{name:'profile',params:{username:author.username}}" class="author">{{author.username}}</nuxt-link>
       <span class="date">{{ article.createdAt | date("MMM D,YYYY") }}</span>
     </div>
     <template v-if="author.username!==user.username">
@@ -35,7 +35,6 @@
   
   </div>
 </template>
-
 <script>
 import { addFavorite,
   deleteFavorite,deleteArticle } from "@/api/article";

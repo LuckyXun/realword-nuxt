@@ -1,7 +1,7 @@
 <!--
  * @Author: XunL
  * @Date: 2021-06-23 02:30:27
- * @LastEditTime: 2021-07-06 18:13:40
+ * @LastEditTime: 2021-07-07 17:25:05
  * @Description: file content
 -->
 <template>
@@ -40,9 +40,17 @@
                   type="text"
                   class="form-control"
                   placeholder="Enter tags"
-                  v-model="article.tagList"
+                  v-model="inputTag"
+                  @keypress.enter="addTag"
                 />
-                <div class="tag-list"></div>
+              <div class="tag-list">
+                <template v-for="(tag,idx) in article.tagList">
+                  <span  class="tag-default tag-pill ng-binding ng-scope" :key="idx">
+                  <i class="ion-close-round" @click="removeTag(idx)"></i>
+                  {{tag}}
+                </span>
+                </template>
+              </div>
               </fieldset>
               <button
                 class="btn btn-lg pull-xs-right btn-primary"
@@ -66,7 +74,9 @@ import { mapState } from "vuex";
 export default {
   middleware: "authenticated",
   data() {
-   
+    return {
+      inputTag:""
+    }
   },
   computed: {
     ...mapState(["user"]),
@@ -79,26 +89,32 @@ export default {
         title: "",
         description: "",
         body: "",
-        tagList: "",
+        tagList: [],
       },
     }
     if(slug){
       const res = await getArticle(slug);
       Object.assign(data.article,res.data.article)
     }     
-    data.article.tagList = data.article.tagList.join(',');
     data.slug = slug
     return data
   },
 
 
   methods: {
+    addTag(){
+      this.article.tagList.push(this.inputTag);
+      this.inputTag = ""
+    },
+    removeTag(idx){
+      this.article.tagList.splice(idx,1)
+    },
     async submit() {
       //TODO 判断的是发布还是修改的逻辑
       const params = Object.assign({}, this.article);
-      params.tagList = params.tagList.split(",");
+      
 
-      const { status } = this.slug?await updateArticle(this.slug,params): await publishArticle(params);
+      const { status } = this.slug?await updateArticle(this.slug,{article:params}): await publishArticle({article:params});
       if (status === 200) {
         this.$router.push(`/profile/${this.user.username}`);
       }

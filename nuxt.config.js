@@ -1,4 +1,8 @@
 export default {
+    head: {
+        title: 'real - world',
+     
+    },
     router: {
         linkExactActiveClass: "active",
         extendRoutes(routes, resolve) {

@@ -49,24 +49,24 @@ export default {
     Commnets
   
   },
-  async asyncData({
-    isDev,
-    route,
-    store,
-    env,
-    params,
-    query,
-    req,
-
-    redirect,
-    error,
-  }) {
+  async asyncData({params}) {
     let { data } = await getArticle(params.slug);
     const article = data.article;
     const content = new MarkdownIt().render(article.body);
-
     return {article:Object.assign({ content }, article)};
   },
+  head() {
+      return {
+        title: `${this.article.title} - realworld`,
+        meta: [
+          {
+            hid: 'description',
+            name: 'description',
+            content: `${this.article.tagList}`
+          }
+        ]
+      }
+    }
 };
 </script>
 

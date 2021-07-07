@@ -31,7 +31,7 @@
                 >
               </li>
               <li class="nav-item" v-if="activeTag">
-                <span class="nav-link" :class="{ active: tab === activeTag }" href=""
+                <span class="nav-link" :class="{ active: tab === activeTag }" 
                   ># {{ activeTag }}</span
                 >
               </li>
@@ -44,9 +44,9 @@
             :key="article.updatedAt"
           >
             <div class="article-meta">
-              <a href="profile.html"><img :src="article.author.image" /></a>
+              <nuxt-link :to="{name:'profile',params:{username:article.author.username}}"><img :src="article.author.image" /></nuxt-link>
               <div class="info">
-                <a href="" class="author">{{ article.author.username }}</a>
+                <nuxt-link :to="{name:'profile',params:{username:article.author.username}}" class="author">{{ article.author.username }}</nuxt-link>
                 <span class="date">{{ article.updatedAt | date("MMM DD,YYYY") }}</span>
               </div>
               <button
@@ -88,7 +88,6 @@
               >
                 <nuxt-link
                   class="page-link ng-binding"
-                  href=""
                   :to="{ name: 'home', query: { page: idx, tag: activeTag, tab: tab } }"
                   >{{ idx }}</nuxt-link
                 >

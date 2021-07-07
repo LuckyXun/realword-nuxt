@@ -33,11 +33,11 @@
           </p>
         </div>
         <div class="card-footer">
-          <a href="" class="comment-author">
+          <nuxt-link  :to="{name:'profile',params:{username:comment.author.username}}" class="comment-author">
             <img :src="comment.author.image" class="comment-author-img" />
-          </a>
+          </nuxt-link>
           &nbsp;
-          <a href="" class="comment-author">{{ comment.author.username }}</a>
+          <nuxt-link :to="{name:'profile',params:{username:comment.author.username}}"  class="comment-author">{{ comment.author.username }}</nuxt-link>
           <span class="date-posted">{{ comment.updatedAt | date("MMM DD,YYYY") }}</span>
           <span class="mod-options">
             <i
