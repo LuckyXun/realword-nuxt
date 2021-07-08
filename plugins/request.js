@@ -1,7 +1,7 @@
 /*
  * @Author: XunL
  * @Date: 2021-06-30 01:29:57
- * @LastEditTime: 2021-07-05 21:46:02
+ * @LastEditTime: 2021-07-08 15:29:40
  * @Description: file content
  */
 import axios from 'axios';
@@ -28,13 +28,14 @@ export default ({ store, redirect }) => {
     request.interceptors.response.use(async (response) => {
 
         return response;
-    }, function ({ response }) {
-        const { status } = response;
+    }, function (err) {
+        const { status } = err.response;
         // code 401 重定向到登陆页面
         if (status === 401 && status === 400) {
-            redirect('/login')
+            redirect('/login');
+            return
         }
-        console.dir(response)
+        throw(err)
     });
 
 

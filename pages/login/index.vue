@@ -81,9 +81,11 @@ export default {
   methods: {
     async submit() {
       try {
+       
         const { data } = this.isLogin
           ? await login({ user: this.user })
           : await register({ user: this.user });
+        console.log(data);
         this.$store.commit("setUser", data.user);
         jsCookie && jsCookie.set("user", data.user);
         this.$router.push("/");
