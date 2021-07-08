@@ -3,6 +3,10 @@ export default {
         title: 'real - world',
      
     },
+    server: {
+        host: '0.0.0.0',
+        port: 3000
+    },
     router: {
         linkExactActiveClass: "active",
         extendRoutes(routes, resolve) {
